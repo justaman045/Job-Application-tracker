@@ -1,18 +1,22 @@
 # North — Job Application Tracker
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![CI](https://github.com/yourusername/north/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/north/actions)
+> **Track every job application, interview, and offer in one place.** Beautiful, fast, and built for solo job seekers.
 
-Track every job application, interview, and offer in one place. Beautiful, fast, and built for solo job seekers and open-source enthusiasts.
+[![React](https://img.shields.io/badge/React-20232A?logo=react)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite)](https://vitejs.dev)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
+[![PWA](https://img.shields.io/badge/PWA-5A0FC8?logo=pwa)](https://web.dev/progressive-web-apps/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker)](https://docker.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-![Dashboard](https://via.placeholder.com/800x450/6366f1/ffffff?text=Dashboard+Preview)
+---
 
 ## Features
 
-- **Dashboard** — Stats, charts, pipeline velocity, activity feed
-- **Application List** — Search, filter, sort, bulk actions, saved filters
+- **Dashboard** — Stats, charts, pipeline velocity, and activity feed
+- **Application List** — Search, filter, sort, bulk actions, and saved filters
 - **Kanban Board** — Drag & drop applications across status columns
-- **Detail View** — Full app details, interview rounds, status timeline
+- **Detail View** — Full application details, interview rounds, and status timeline
 - **Offer Comparison** — Weighted scoring to compare offers side by side
 - **Google Sign-In** — Quick and secure authentication
 - **Dark Mode** — System-aware with manual toggle
@@ -20,91 +24,73 @@ Track every job application, interview, and offer in one place. Beautiful, fast,
 - **PWA** — Install on desktop or mobile
 - **Keyboard Shortcuts** — `N` new, `/` search, `?` help
 
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19 + Vite |
+| Database | Firebase Firestore |
+| Auth | Firebase Authentication (Google) |
+| Styling | Tailwind CSS |
+| PWA | Vite PWA plugin |
+| Deployment | Firebase Hosting (via GH Actions) |
+
 ## Quick Start
 
-### 1. Firebase Setup (5 minutes)
+### 1. Firebase Setup
 
 1. Go to [console.firebase.google.com](https://console.firebase.google.com) → **Create project**
 2. **Authentication** → Sign-in providers → Enable **Google**
 3. **Firestore Database** → Create database → Choose a region → **Start in test mode**
-4. **Project Settings (⚙️)** → General → Your apps → **Web (</>)** → Register app
-5. Copy the `firebaseConfig` values
+4. **Project Settings (⚙️)** → General → Your apps → **Web (</>)** → Register app → Copy config
 
-### 2. Configure
-
-```bash
-cp .env.example .env
-# Edit .env and paste your Firebase config values
-```
-
-### 3. Run
+### 2. Local Setup
 
 ```bash
+# Clone
+git clone https://github.com/justaman045/Job-Application-tracker.git
+cd Job-Application-tracker
+
+# Install
 npm install
+
+# Set up environment
+cp .env.example .env
+# Paste your Firebase config
+
+# Run dev server
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173)
+### 3. Firestore Rules
 
-### 4. Secure Firestore & Storage (After First Run)
-
-Set your Firestore rules:
-
-```js
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /applications/{docId} {
-      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-    }
-  }
-}
+Deploy the rules from `firestore.rules`:
+```bash
+firebase deploy --only firestore:rules
 ```
 
-Set your Storage rules:
-
-```js
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /users/{userId}/{allPaths=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId
-        && request.resource.size < 10 * 1024 * 1024;
-    }
-  }
-}
-```
-
-## 💰 Spark Plan (Free Forever)
-
-This app runs entirely on Firebase's free **Spark plan**:
-- **Authentication** — Google Sign-In (free)
-- **Firestore** — 1 GB stored, 50K reads/day, 20K writes/day
-- **Storage** — 5 GB, 20K uploads/day, 1 GB/day download
-- **Hosting** — 10 GB storage, 100 GB/month bandwidth
-- **No Cloud Functions** or paid extensions used
-
-## Deploy
-
-### Firebase Hosting
+### 4. Deploy
 
 ```bash
 npm run build
-npx firebase-tools init hosting    # point to dist/
-npx firebase-tools deploy --only hosting
+firebase deploy
 ```
 
-### Docker
+Or push to `main` — the GitHub Actions workflow at `.github/workflows/deploy.yml` handles deployment automatically.
 
-```bash
-docker compose up --build
+## Project Structure
+
+```
+src/
+├── App.jsx                 # Root component
+├── components/
+│   ├── applications/       # Application list, table, filters
+│   ├── dashboard/          # Stats, charts
+│   ├── kanban/             # Drag & drop board
+│   └── ui/                 # Shared UI components
+├── context/                # Auth context
+├── hooks/                  # Custom hooks
+└── lib/                    # Firebase, utilities
 ```
 
-## Tech Stack
-
-React + Vite + Tailwind CSS v4 + Firebase (Auth + Firestore) + Recharts + React Router v6 + dnd-kit + Lucide + date-fns
-
-## License
-
-MIT
+For contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md).
