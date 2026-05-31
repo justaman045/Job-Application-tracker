@@ -48,8 +48,8 @@
 
 ```bash
 # Clone
-git clone https://github.com/justaman045/Job-Application-tracker.git
-cd Job-Application-tracker
+git clone https://github.com/justaman045/JobTracker.git
+cd JobTracker
 
 # Install
 npm install
